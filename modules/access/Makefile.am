@@ -353,6 +353,7 @@ EXTRA_LTLIBRARIES += libaccess_eyetv_plugin.la
 
 ### Network streams ###
 
+if !HAVE_NACL
 libftp_plugin_la_SOURCES = access/ftp.c
 libftp_plugin_la_LIBADD = $(SOCKET_LIBS)
 access_LTLIBRARIES += libftp_plugin.la
@@ -442,6 +443,7 @@ access_LTLIBRARIES += libavio_plugin.la
 endif
 endif
 
+endif
 libsatip_plugin_la_SOURCES = access/satip.c
 libsatip_plugin_la_LIBADD = $(SOCKET_LIBS) $(LIBPTHREAD)
 access_LTLIBRARIES += libsatip_plugin.la

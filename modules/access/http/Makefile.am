@@ -1,3 +1,5 @@
+if !HAVE_NACL
+
 libhttps_plugin_la_SOURCES = access/http/access.c
 libhttps_plugin_la_LIBADD = libvlc_http.la
 access_LTLIBRARIES += libhttps_plugin.la
@@ -52,3 +54,5 @@ check_PROGRAMS += hpack_test hpackenc_test \
 TESTS += hpack_test hpackenc_test \
 	h2frame_test h2output_test h2conn_test h1conn_test h1chunked_test \
 	http_msg_test http_file_test http_tunnel_test
+
+endif
