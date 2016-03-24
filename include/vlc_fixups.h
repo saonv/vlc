@@ -269,7 +269,7 @@ int posix_memalign (void **, size_t, size_t);
 #endif
 
 /* locale.h */
-#ifndef HAVE_USELOCALE
+#if !defined(HAVE_USELOCALE) && !(defined(__native_client__) && defined(__cplusplus))
 #define LC_ALL_MASK      0
 #define LC_NUMERIC_MASK  0
 #define LC_MESSAGES_MASK 0
