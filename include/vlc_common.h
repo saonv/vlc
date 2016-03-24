@@ -408,6 +408,10 @@ typedef int ( * vlc_list_callback_t ) ( vlc_object_t *,      /* variable's objec
 #   include <os2.h>
 #endif
 
+#ifdef _NACL_POSIX_CLOCK
+#   define _POSIX_TIMERS 1
+#endif
+
 #include "vlc_mtime.h"
 #include "vlc_threads.h"
 
