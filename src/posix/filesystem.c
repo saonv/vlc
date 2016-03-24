@@ -245,13 +245,17 @@ ssize_t vlc_write(int fd, const void *buf, size_t len)
 
 ssize_t vlc_writev(int fd, const struct iovec *iov, int count)
 {
+#if !defined(__native_client__)
     sigset_t set, oset;
 
     sigemptyset(&set);
     sigaddset(&set, SIGPIPE);
     pthread_sigmask(SIG_BLOCK, &set, &oset);
+#endif
 
     ssize_t val = writev(fd, iov, count);
+
+#if !defined(__native_client__)
     if (val < 0 && errno == EPIPE)
     {
 #if (_POSIX_REALTIME_SIGNALS > 0)
@@ -277,6 +281,9 @@ ssize_t vlc_writev(int fd, const struct iovec *iov, int count)
 
     if (!sigismember(&oset, SIGPIPE)) /* Restore the signal mask if changed */
         pthread_sigmask(SIG_SETMASK, &oset, NULL);
+
+#endif
+
     return val;
 }
 
