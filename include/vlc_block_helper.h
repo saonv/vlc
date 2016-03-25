@@ -276,6 +276,35 @@ static inline int block_SkipBytes( block_bytestream_t *p_bytestream,
     return VLC_SUCCESS;
 }
 
+/**
+ *  Skip `i_data` bytes, or whatever's left. Returns the number of bytes
+ *  skipped.
+ */
+static inline size_t block_SkipMaxBytes( block_bytestream_t *p_bytestream,
+                                         size_t i_data )
+{
+    block_t *p_block;
+    size_t i_offset, i_copy;
+
+    /* Check we have that much data */
+    i_offset = p_bytestream->i_offset;
+    i_copy = 0;
+    for( p_block = p_bytestream->p_block;
+         p_block != NULL; p_block = p_block->p_next )
+    {
+        i_copy = __MIN( i_data, p_block->i_buffer - i_offset );
+        i_data -= i_copy;
+
+        if( !i_data ) break;
+
+        i_offset = 0;
+    }
+
+    p_bytestream->p_block = p_block;
+    p_bytestream->i_offset = i_offset + i_copy;
+    return i_copy;
+}
+
 static inline int block_PeekBytes( block_bytestream_t *p_bytestream,
                                    uint8_t *p_data, size_t i_data )
 {
@@ -374,6 +403,55 @@ static inline int block_GetBytes( block_bytestream_t *p_bytestream,
     p_bytestream->i_offset = i_offset + i_copy;
 
     return VLC_SUCCESS;
+}
+/**
+ *  Write `i_data` bytes into p_data, or whatever's left. Returns the number
+ *  of bytes read.
+ */
+static inline size_t block_GetMaxBytes( block_bytestream_t *p_bytestream,
+                                        uint8_t *p_data, size_t i_data )
+{
+    block_t *p_block;
+    size_t i_offset, i_copy, i_size;
+
+    /* Check we have that much data */
+    i_offset = p_bytestream->i_offset;
+    i_size = i_data;
+    for( p_block = p_bytestream->p_block;
+         p_block != NULL; p_block = p_block->p_next )
+    {
+        i_copy = __MIN( i_size, p_block->i_buffer - i_offset );
+        i_size -= i_copy;
+        i_offset = 0;
+
+        if( !i_size ) break;
+    }
+
+    /* Copy the data */
+    i_offset = p_bytestream->i_offset;
+    i_size = i_data;
+    i_copy = 0;
+    for( p_block = p_bytestream->p_block;
+         p_block != NULL; p_block = p_block->p_next )
+    {
+        i_copy = __MIN( i_size, p_block->i_buffer - i_offset );
+        i_size -= i_copy;
+
+        if( i_copy )
+        {
+            memcpy( p_data, p_block->p_buffer + i_offset, i_copy );
+            p_data += i_copy;
+        }
+
+        if( !i_size ) break;
+
+        i_offset = 0;
+    }
+
+    p_bytestream->p_block = p_block;
+    p_bytestream->i_offset = i_offset + i_copy;
+
+    return i_copy;
 }
 
 static inline int block_PeekOffsetBytes( block_bytestream_t *p_bytestream,
