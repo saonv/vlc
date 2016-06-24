@@ -211,6 +211,7 @@ EXTRA_libvlccore_la_SOURCES = \
 	$(SOURCES_libvlc_linux) \
 	$(SOURCES_libvlc_win32) \
 	$(SOURCES_libvlc_os2) \
+	$(SOURCES_libvlc_nacl) \
 	$(SOURCES_libvlc_other) \
 	$(SOURCES_libvlc_httpd) \
 	$(SOURCES_libvlc_sout) \
@@ -231,7 +232,11 @@ else
 if HAVE_OS2
 libvlccore_la_SOURCES += $(SOURCES_libvlc_os2)
 else
+if HAVE_NACL
+libvlccore_la_SOURCES += $(SOURCES_libvlc_nacl)
+else
 libvlccore_la_SOURCES += $(SOURCES_libvlc_other)
+endif
 endif
 endif
 endif
@@ -311,6 +316,25 @@ SOURCES_libvlc_os2 = \
 	os2/thread.c \
 	os2/specific.c \
 	os2/rand.c \
+	$(NULL)
+
+SOURCES_libvlc_nacl = \
+	posix/dirs.c \
+	nacl/cancel.c \
+	nacl/cond.c \
+	nacl/mutex.c \
+	nacl/plugin.c \
+	nacl/rwlock.c \
+	nacl/sem.c \
+	nacl/thread.c \
+	nacl/threadvar.c \
+	nacl/time.c \
+	nacl/error.c \
+	posix/filesystem.c \
+	android/netconf.c \
+	posix/timer.c \
+	posix/specific.c \
+	posix/rand.c \
 	$(NULL)
 
 SOURCES_libvlc_other = \
