@@ -67,3 +67,10 @@ if HAVE_WIN32_DESKTOP
 control_LTLIBRARIES += libntservice_plugin.la
 control_LTLIBRARIES += libwin_hotkeys_plugin.la libwin_msg_plugin.la
 endif
+
+libppapi_control_plugin_la_SOURCES = control/ppapi/control.cpp
+libppapi_control_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) -MP -MD
+libppapi_control_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+if HAVE_NACL
+control_LTLIBRARIES += libppapi_control_plugin.la
+endif
