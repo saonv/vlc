@@ -55,7 +55,12 @@ namespace {
   };
 
   template<int>
-  struct DispatcherTag;
+  struct DispatcherTag {
+    static DispatcherTag tag_helper;
+  };
+
+  template<int N>
+  DispatcherTag<N> DispatcherTag<N>::tag_helper;
 
   template<class T, T*, class DispatcherType>
   class DispatchContainer {
@@ -89,9 +94,8 @@ namespace {
 
 #define MKV_SWITCH_CREATE(DispatchType_, GroupName_, PayloadType_) \
   typedef DispatcherTag<__LINE__> GroupName_ ## _tag_t; \
-  extern GroupName_##_tag_t GroupName_ ## _tag; \
   struct GroupName_; \
-  struct GroupName_##_base : DispatchContainer<GroupName_##_tag_t, &GroupName_##_tag, DispatchType_> { \
+  struct GroupName_##_base : DispatchContainer<GroupName_##_tag_t, &GroupName_##_tag_t::tag_helper, DispatchType_> { \
       typedef      PayloadType_ payload_t;                         \
       typedef     DispatchType_ dispatch_t;                        \
       typedef struct GroupName_ handler_t;                         \

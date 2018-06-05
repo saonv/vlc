@@ -32,6 +32,7 @@
 #include <limits.h>
 #include <errno.h>
 #include <unistd.h>
+#include <sys/uio.h>
 #ifdef HAVE_POLL
 # include <poll.h>
 #endif
